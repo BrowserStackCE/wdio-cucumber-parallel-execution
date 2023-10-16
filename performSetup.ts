@@ -1,10 +1,9 @@
 'use strict';
 
-var fs_extra = require('fs-extra');
-var featureFileSplitter = require('./featureFileSplitter');
+import featureFileSplitter from "./featureFileSplitter";
+
 var tmpFeatureFiles = new featureFileSplitter();
-var emoji = require('node-emoji');
-var chalk = require('chalk');
+import fs from 'fs-extra'
 
 /**
  * Compile and create splitted files
@@ -19,14 +18,12 @@ var chalk = require('chalk');
 var performSetup = function performSetup(options) {
     try {
 
-        chalk.green.bold(emoji.emojify(':rocket:') + ' wdio-cucumber-parallel-execution triggered ') + emoji.emojify(':thumbsup:')
-
         if (options.cleanTmpSpecDirectory) {
             //Remove Tmp Spec Directory during setup & Create One
-            fs_extra.removeSync(options.tmpSpecDirectory);
+            fs.removeSync(options.tmpSpecDirectory);
         }
 
-        fs_extra.ensureDirSync(options.tmpSpecDirectory);
+        fs.ensureDirSync(options.tmpSpecDirectory);
 
         //Compile and Create Split Feature Files
         tmpFeatureFiles.compile({
@@ -41,4 +38,4 @@ var performSetup = function performSetup(options) {
     }
 };
 
-module.exports = performSetup;
+export default performSetup;

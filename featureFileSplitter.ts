@@ -1,14 +1,16 @@
 "use strict";
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray1(arr: string | any[] | Iterable<unknown> | ArrayLike<unknown>) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-var fs = require('fs');
-var Gherkin = require("gherkin");
-var glob = require("glob");
-var parser = new (require("cucumber-tag-expressions").TagExpressionParser)();
-var path = require("path");
-var _ = require("lodash");
-var chalk = require('chalk');
+import Gherkin from "gherkin";
+import { glob } from "glob";
+// var parser = new (require("cucumber-tag-expressions").TagExpressionParser)();
+import parser  from "cucumber-tag-expressions"
+import _ from "lodash";
+
+import fs from 'fs'
+
+import path from "path";
 
 var featureFileSplitter = function featureFileSplitter() {
 
@@ -21,7 +23,7 @@ var featureFileSplitter = function featureFileSplitter() {
      *
      * @return {Promise<void>}
      */
-    this.compile = function (options) {
+    this.compile = function (options: { sourceSpecDirectory: string; tmpSpecDirectory: string; tagExpression: string; lang: string; ff: string; }) {
         var _this = this;
 
         try {
@@ -39,7 +41,7 @@ var featureFileSplitter = function featureFileSplitter() {
             if (options.ff == undefined) {
                 filePaths = glob.sync(options.sourceSpecDirectory + "/*.feature");
             } else {
-                var featureFile = options.sourceSpecDirectory + "/" + options.ff + ".feature";
+                const featureFile = options.sourceSpecDirectory + "/" + options.ff + ".feature";
                 filePaths.push(featureFile);
             }
 
@@ -48,7 +50,7 @@ var featureFileSplitter = function featureFileSplitter() {
             var i = 1;
             var fileSequence = 0;
             var scenariosWithTagFound = false;
-            asts.forEach(function (ast) {
+            asts.forEach(function (ast: { feature: { children: any; }; }) {
                 if (ast.feature != undefined || ast.feature != null) {
                     var featureTemplate = _this.getFeatureTemplate(ast);
                     var features = _this.splitFeature(ast.feature.children, featureTemplate);
@@ -69,7 +71,7 @@ var featureFileSplitter = function featureFileSplitter() {
             });
 
             if (scenariosWithTagFound == false) {
-                console.log(chalk.bold.hex('#7D18FF')("No Feature File found for tha Tag Expression: " + options.tagExpression));
+                console.log("No Feature File found for the Tag Expression: " + options.tagExpression);
             }
         } catch (e) {
             console.log('Error: ', e);
@@ -82,7 +84,7 @@ var featureFileSplitter = function featureFileSplitter() {
      * @param filePaths
      * @return {Array}
      */
-    this.readFiles = function (filePaths) {
+    this.readFiles = function (filePaths: any[]): Array<any> {
         try {
             return filePaths.map(function (filePath) {
                 return fs.readFileSync(filePath, "utf8");
@@ -99,7 +101,7 @@ var featureFileSplitter = function featureFileSplitter() {
      * @param lang - language to parse
      * @return {Array}
      */
-    this.parseGherkinFiles = function (features, lang) {
+    this.parseGherkinFiles = function (features, lang): Array<any> {
         try {
             var _parser = new Gherkin.Parser();
             var matcher = new Gherkin.TokenMatcher(lang);
@@ -119,10 +121,10 @@ var featureFileSplitter = function featureFileSplitter() {
      * @param feature
      * @return {*}
      */
-    this.getFeatureTemplate = function (feature) {
+    this.getFeatureTemplate = function (feature: any): any {
         try {
             var featureTemplate = _.cloneDeep(feature);
-            featureTemplate.feature.children = featureTemplate.feature.children.filter(function (scenario) {
+            featureTemplate.feature.children = featureTemplate.feature.children.filter(function (scenario: { type: string; }) {
                 return scenario.type === "Background";
             });
             return featureTemplate;
@@ -138,7 +140,7 @@ var featureFileSplitter = function featureFileSplitter() {
      * @return {Array} - list of features
      * @private
      */
-    this.splitFeature = function (scenarios, featureTemplate) {
+    this.splitFeature = function (scenarios: Array<any>, featureTemplate: object): Array<any> {
 
         try {
             var scenarioOutline = scenarios.filter(function (scenario) {
@@ -158,10 +160,11 @@ var featureFileSplitter = function featureFileSplitter() {
                 } else return scenario;
             });
 
-            return _.flatten(scenarioOutline).map(function (scenario) {
+            return _.flatten(scenarioOutline).map(function (scenario: { tags: string | any[] | Iterable<unknown> | ArrayLike<unknown>; }) {
                 var feature = _.cloneDeep(featureTemplate);
                 var updatedScenario = _.cloneDeep(scenario);
-                updatedScenario.tags = [].concat(_toConsumableArray(scenario.tags)).concat(featureTemplate.feature.tags);
+                // @ts-ignore
+                updatedScenario.tags = [].concat(_toConsumableArray1(scenario.tags)).concat(featureTemplate.feature.tags);
                 feature.feature.children.push(updatedScenario);
                 return feature;
             });
@@ -176,7 +179,7 @@ var featureFileSplitter = function featureFileSplitter() {
      * @return {string}
      * @private
      */
-    this.writeFeature = function (feature) {
+    this.writeFeature = function (feature): string {
         try {
             var LINE_DELIMITER = "\n";
 
@@ -243,8 +246,9 @@ var featureFileSplitter = function featureFileSplitter() {
      * @return {Array}
      * @private
      */
-    this.filterFeaturesByTag = function (features, tagExpression) {
+    this.filterFeaturesByTag = function (features, tagExpression): Array<any> {
         try {
+            parser.TagExpressionParser();
             var expressionNode = parser.parse(tagExpression);
             return features.filter(function (feature) {
                 return feature.feature.children.some(function (scenario) {
@@ -261,4 +265,4 @@ var featureFileSplitter = function featureFileSplitter() {
     };
 };
 
-module.exports = featureFileSplitter;
+export default featureFileSplitter;

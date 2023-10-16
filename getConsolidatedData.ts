@@ -1,21 +1,21 @@
 'use strict';
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray(arr: string | any[] | Iterable<unknown> | ArrayLike<unknown>) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-var fs = require('fs-extra');
-var chalk = require('chalk');
-var glob = require('glob');
+import { glob } from "glob";
+import fs from 'fs'
 
 /**
  * Get Consolidated JSON Report Array
  * @param {string} options.parallelExecutionReportDirectory - Path to Parallel Execution Report Directory where all the Reports will be saved
  * @return {Array}
  */
-var getConsolidatedArray = function getConsolidatedArray(options) {
+var getConsolidatedArray = function getConsolidatedArray(options: { parallelExecutionReportDirectory: string; }): Array<any> {
 
     try {
 
         var jsonArray = [];
+
         var jsonReportPaths = glob.sync(options.parallelExecutionReportDirectory + '/*.json', { sync: true });
 
         if (jsonReportPaths != null) {
@@ -63,11 +63,11 @@ var getConsolidatedArray = function getConsolidatedArray(options) {
 
             return filteredArray;
         } else {
-            console.log(chalk.bold.hex('#7D18FF')('No JSON Files found in ' + options.parallelExecutionReportDirectory));
+            console.log('No JSON Files found in ' + options.parallelExecutionReportDirectory);
         }
     } catch (e) {
         console.log('Error: ', e);
     }
 };
 
-module.exports = getConsolidatedArray;
+export default getConsolidatedArray;

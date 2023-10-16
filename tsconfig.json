@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "types": ["node"],
+    "skipLibCheck": true,
+    "outDir": "./built",
+    "lib": ["ES2015"],
+    "target": "ES2015",
+    "module": "CommonJS",
+    "esModuleInterop": true
+  },
+  "include": ["./**/*"]
+}
